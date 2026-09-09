@@ -1,4 +1,8 @@
-from .denario import Denario, Research, Journal, LLM, models, KeyManager
+try:
+    from .denario import Denario, Research, Journal, LLM, models, KeyManager
+except ImportError:
+    Denario = Research = Journal = LLM = models = KeyManager = None
+
 from .config import REPO_DIR
 
 __all__ = ['Denario', 'Research', 'Journal', 'REPO_DIR', 'LLM', "models", "KeyManager"]

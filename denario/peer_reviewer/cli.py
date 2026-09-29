@@ -19,6 +19,17 @@ def main():
         help="Nome do modelo local no Ollama (padrão: qwen2.5:7b)"
     )
     parser.add_argument(
+        "--provider",
+        default="ollama",
+        choices=["ollama", "gemini", "openai"],
+        help="Provedor da LLM: 'ollama' (local), 'gemini' (Google) ou 'openai' (padrão: ollama)"
+    )
+    parser.add_argument(
+        "--api-key",
+        default=None,
+        help="Chave de API para o provedor online (ou configure GEMINI_API_KEY / OPENAI_API_KEY)"
+    )
+    parser.add_argument(
         "--output-dir", "-o",
         default="./revisoes_geradas",
         help="Diretório para salvar os relatórios da revisão (padrão: ./revisoes_geradas)"
@@ -39,15 +50,22 @@ def main():
     print("🔬 DENARIO - SIMULADOR DE COMITÊ DE REVISÃO POR PARES")
     print("===============================================================")
     print(f"📌 Artigo a revisar : {args.paper}")
-    print(f"🤖 Modelo LLM Local : {args.model}")
+    print(f"🌐 Provedor LLM     : {args.provider.upper()}")
+    print(f"🤖 Modelo           : {args.model}")
     print(f"📁 Pasta de Saída   : {args.output_dir}")
     print("---------------------------------------------------------------")
 
     try:
-        engine = PeerReviewEngine(model_name=args.model, ollama_url=args.ollama_url)
+        engine = PeerReviewEngine(
+            model_name=args.model,
+            provider=args.provider,
+            ollama_url=args.ollama_url,
+            api_key=args.api_key
+        )
         if not engine.llm.check_connection():
-            print(f"⚠️ Aviso: Não foi possível conectar ao servidor Ollama em {args.ollama_url}.")
-            print("Certifique-se de executar 'ollama serve' em outro terminal ou rode o script 'start_ollama.sh'.")
+            if args.provider == "ollama":
+                print(f"⚠️ Aviso: Não foi possível conectar ao servidor Ollama em {args.ollama_url}.")
+                print("Certifique-se de executar 'ollama serve' em outro terminal.")
             sys.exit(1)
 
         results = engine.run_review(paper_path=args.paper)

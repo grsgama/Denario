@@ -14,9 +14,21 @@ class PeerReviewEngine:
     Orquestrador da revisão por pares multi-agente.
     """
 
-    def __init__(self, model_name: str = "qwen2.5:7b", ollama_url: str = "http://localhost:11434"):
+    def __init__(
+        self,
+        model_name: str = "qwen2.5:7b",
+        provider: str = "ollama",
+        ollama_url: str = "http://localhost:11434",
+        api_key: Optional[str] = None
+    ):
         self.model_name = model_name
-        self.llm = LocalLLMClient(model_name=model_name, base_url=ollama_url)
+        self.provider = provider
+        self.llm = LocalLLMClient(
+            model_name=model_name,
+            provider=provider,
+            base_url=ollama_url,
+            api_key=api_key
+        )
 
     def run_review(self, paper_path: str, progress_callback: Optional[Callable[[str], None]] = None) -> Dict[str, Any]:
         def log(msg: str):

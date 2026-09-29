@@ -85,13 +85,40 @@ python revisor_pares.py --paper /caminho/para/artigo.pdf --model qwen2.5:7b --ou
 | Parâmetro | Tipo | Obrigatório | Descrição |
 | :--- | :--- | :--- | :--- |
 | `--paper` / `-p` | Caminho | **Sim** | Caminho para o artigo (`.docx`, `.pdf`, `.tex`, `.md`, `.txt`) |
-| `--model` / `-m` | Texto | Não | Modelo no Ollama (Padrão: `qwen2.5:7b`) |
+| `--provider` | Opção | Não | Provedor da LLM: `ollama` (local), `gemini` (Google) ou `openai` (Padrão: `ollama`) |
+| `--model` / `-m` | Texto | Não | Nome do modelo (Padrão: `qwen2.5:7b` para Ollama, `gemini-1.5-pro` para Gemini, `gpt-4o` para OpenAI) |
+| `--api-key` | Chave | Não | Chave de API online (ou configure `GEMINI_API_KEY` / `OPENAI_API_KEY`) |
 | `--output-dir` / `-o` | Caminho | Não | Pasta onde serão salvos os relatórios (Padrão: `./revisoes_geradas`) |
-| `--ollama-url` | URL | Não | URL da API do Ollama (Padrão: `http://localhost:11434`) |
+| `--ollama-url` | URL | Não | URL da API do Ollama local (Padrão: `http://localhost:11434`) |
 
 ---
 
-## 📊 6. Relatórios Gerados
+## 🧠 6. Utilizando LLMs Mais Potentes (Locais e Online)
+
+### 6.1. Modelos Locais Mais Potentes (via Ollama)
+```bash
+# Modelos analíticos avançados
+ollama pull qwen2.5:32b
+ollama pull deepseek-r1:32b
+
+# Execução
+python revisor_pares.py --paper /caminho/artigo.pdf --model qwen2.5:32b
+```
+
+### 6.2. Modelos Online de Fronteira (Google Gemini e OpenAI)
+```bash
+# Com Google Gemini (Recomendado - Janela de até 2M tokens)
+export GEMINI_API_KEY="sua_chave"
+python revisor_pares.py --paper /caminho/artigo.pdf --provider gemini --model gemini-1.5-pro
+
+# Com OpenAI GPT-4o
+export OPENAI_API_KEY="sua_chave"
+python revisor_pares.py --paper /caminho/artigo.pdf --provider openai --model gpt-4o
+```
+
+---
+
+## 📊 7. Relatórios Gerados
 
 Após o término da revisão, o sistema gera automaticamente 3 arquivos na pasta de saída escolhida:
 
@@ -101,7 +128,7 @@ Após o término da revisão, o sistema gera automaticamente 3 arquivos na pasta
 
 ---
 
-## 🌐 7. Como Enviar (Push) Esta Branch para o GitHub
+## 🌐 8. Como Enviar (Push) Esta Branch para o GitHub
 
 Atualmente, a branch `minhas-modificacoes` está salva **apenas no seu computador local**. Para enviá-la para o seu perfil no GitHub:
 

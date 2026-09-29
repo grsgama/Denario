@@ -85,13 +85,67 @@ python revisor_pares.py --paper /caminho/para/artigo.pdf --model qwen2.5:7b --ou
 | Parâmetro | Tipo | Obrigatório | Descrição |
 | :--- | :--- | :--- | :--- |
 | `--paper` / `-p` | Caminho | **Sim** | Caminho para o artigo (`.docx`, `.pdf`, `.tex`, `.md`, `.txt`) |
-| `--model` / `-m` | Texto | Não | Modelo no Ollama (Padrão: `qwen2.5:7b`) |
+| `--provider` | Opção | Não | Provedor da LLM: `ollama` (local), `gemini` (Google) ou `openai` (Padrão: `ollama`) |
+| `--model` / `-m` | Texto | Não | Nome do modelo (Padrão: `qwen2.5:7b` para Ollama, `gemini-1.5-pro` para Gemini, `gpt-4o` para OpenAI) |
+| `--api-key` | Chave | Não | Chave de API online (ou configure as variáveis `GEMINI_API_KEY` ou `OPENAI_API_KEY`) |
 | `--output-dir` / `-o` | Caminho | Não | Pasta onde serão salvos os relatórios (Padrão: `./revisoes_geradas`) |
-| `--ollama-url` | URL | Não | URL da API do Ollama (Padrão: `http://localhost:11434`) |
+| `--ollama-url` | URL | Não | URL da API do Ollama local (Padrão: `http://localhost:11434`) |
 
 ---
 
-## 📊 6. Relatórios Gerados
+## 🧠 6. Utilizando LLMs Muito Mais Potentes
+
+O sistema é modular e permite escalar a capacidade de análise científica para modelos de raciocínio profundo (*Deep Reasoning*) e modelos de nuvem de fronteira mundial:
+
+### 6.1. Modelos Locais Mais Potentes (Via Ollama)
+Se a sua máquina possui mais memória RAM/VRAM (16GB a 64GB), você pode usar modelos abertos muito mais profundos:
+
+```bash
+# 1. Baixar modelo no Ollama:
+# Qwen 2.5 32B (Excelente capacidade analítica e científica):
+ollama pull qwen2.5:32b
+
+# DeepSeek R1 32B / 14B (Focado em raciocínio matemático e lógico rigoroso):
+ollama pull deepseek-r1:32b
+
+# Llama 3.3 70B (Nível de fronteira para servidores com GPU dedicada potente):
+ollama pull llama3.3:70b
+
+# 2. Executar o revisor especificando o modelo:
+python revisor_pares.py --paper /caminho/para/artigo.pdf --model qwen2.5:32b
+```
+
+---
+
+### 6.2. Modelos Online de Fronteira (Google Gemini e OpenAI)
+Para manuscritos extensos, artigos com dezenas de equações ou avaliações sob rigor implacável (padrão IEEE Transactions / Nature), você pode usar modelos online com janelas de contexto gigantescas:
+
+#### Opção A: Google Gemini (Recomendado — Contexto de até 2M de tokens)
+1. Obtenha sua chave gratuita ou paga no [Google AI Studio](https://aistudio.google.com/).
+2. Defina sua chave de API no terminal ou passe via parâmetro:
+```bash
+export GEMINI_API_KEY="sua_chave_aqui"
+```
+3. Execute com o **Gemini 1.5 Pro** ou **Gemini 2.0 Flash**:
+```bash
+python revisor_pares.py --paper /caminho/para/artigo.pdf --provider gemini --model gemini-1.5-pro
+```
+*(Você também pode passar a chave diretamente: `--api-key SUA_CHAVE`)*
+
+#### Opção B: OpenAI (GPT-4o)
+1. Obtenha sua chave na plataforma da [OpenAI](https://platform.openai.com/).
+2. Defina a variável de ambiente:
+```bash
+export OPENAI_API_KEY="sua_chave_aqui"
+```
+3. Execute com o **GPT-4o**:
+```bash
+python revisor_pares.py --paper /caminho/para/artigo.pdf --provider openai --model gpt-4o
+```
+
+---
+
+## 📊 7. Relatórios Gerados
 
 Após o término da revisão, o sistema gera automaticamente 3 arquivos na pasta de saída escolhida:
 
@@ -101,12 +155,12 @@ Após o término da revisão, o sistema gera automaticamente 3 arquivos na pasta
 
 ---
 
-## 🌐 7. Sincronização com o GitHub
+## 🌐 8. Sincronização com o GitHub
 
 Para atualizar alterações e enviar para a sua conta no GitHub:
 
 ```bash
 git add .
-git commit -m "Atualiza README e codigo do revisor de pares"
+git commit -m "Atualiza README e codigo do revisor de pares com suporte a LLMs potentes"
 git push -u meu-fork minhas-modificacoes
 ```
